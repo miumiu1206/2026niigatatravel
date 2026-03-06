@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🌸 Japan Trip 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Japan Trip 2026</title>
 
 <style>
 
 body{
-margin:0;
 font-family:-apple-system;
+margin:0;
 background:#ffd6e7;
-color:#333;
 }
 
 header{
+background:#ff9ec4;
+padding:18px;
 text-align:center;
-padding:20px;
-background:#ffc3d9;
-font-size:20px;
+font-size:22px;
 font-weight:bold;
+color:white;
 }
 
 .container{
@@ -29,18 +31,18 @@ padding:15px;
 select{
 width:100%;
 padding:12px;
-border-radius:10px;
+border-radius:12px;
 border:none;
-margin-bottom:15px;
 font-size:16px;
+margin-bottom:15px;
 }
 
 .card{
 background:white;
 padding:15px;
-border-radius:15px;
+border-radius:16px;
 margin-bottom:15px;
-box-shadow:0 3px 10px rgba(0,0,0,0.1);
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
 }
 
 .title{
@@ -51,31 +53,26 @@ margin-bottom:8px;
 button{
 background:#ff7aa8;
 border:none;
-color:white;
 padding:8px 12px;
+color:white;
 border-radius:8px;
-font-size:14px;
 }
 
 input{
-width:70%;
 padding:8px;
 border-radius:8px;
 border:1px solid #ddd;
+width:65%;
 }
 
 .spot{
 display:flex;
 justify-content:space-between;
-margin-top:8px;
-}
-
-.map{
-margin-top:8px;
-display:inline-block;
+margin-top:6px;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -91,19 +88,15 @@ display:inline-block;
 <div class="card">
 <div class="title">📍 Location</div>
 <div id="location"></div>
+<br>
 <a id="mapBtn" target="_blank">
-<button class="map">🗺 Map</button>
+<button>🗺 Open Map</button>
 </a>
 </div>
 
 <div class="card">
 <div class="title">🏨 Hotel</div>
 <div id="hotel"></div>
-</div>
-
-<div class="card">
-<div class="title">🌤 Weather</div>
-<div id="weather">Loading...</div>
 </div>
 
 <div class="card">
@@ -125,92 +118,92 @@ display:inline-block;
 
 <script>
 
-const data={
+const tripData={
 
 "2026-03-07":{
 location:"東京(品川)",
-hotel:"品川 Prince Hotel",
-remark:"抵達東京"
+hotel:"Shinagawa Prince Hotel",
+remark:"到達東京"
 },
 
 "2026-03-08":{
 location:"東京",
-hotel:"品川 Prince Hotel"
+hotel:"Shinagawa Prince Hotel"
 },
 
 "2026-03-09":{
 location:"東京",
-hotel:"品川 Prince Hotel"
+hotel:"Shinagawa Prince Hotel"
 },
 
 "2026-03-10":{
 location:"東京",
-hotel:"品川 Prince Hotel"
+hotel:"Shinagawa Prince Hotel"
 },
 
 "2026-03-11":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟 Niigata",
+hotel:"Hotel Nikko Niigata"
 },
 
 "2026-03-12":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟 Niigata",
+hotel:"Hotel Nikko Niigata"
 },
 
 "2026-03-13":{
 location:"輕井澤",
-hotel:"輕井澤 Prince"
+hotel:"Karuizawa Prince Hotel"
 },
 
 "2026-03-14":{
 location:"輕井澤",
-hotel:"輕井澤 Prince"
+hotel:"Karuizawa Prince Hotel"
 },
 
 "2026-03-15":{
 location:"月岡溫泉",
-hotel:"白玉之湯"
+hotel:"Shiratama no Yu"
 },
 
 "2026-03-16":{
 location:"月岡溫泉",
-hotel:"白玉之湯"
+hotel:"Shiratama no Yu"
 },
 
 "2026-03-17":{
 location:"月岡溫泉",
-hotel:"白玉之湯"
+hotel:"Shiratama no Yu"
 },
 
 "2026-03-18":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟",
+hotel:"Hotel Nikko Niigata"
 },
 
 "2026-03-19":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟",
+hotel:"Hotel Nikko Niigata"
 },
 
 "2026-03-20":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟",
+hotel:"Hotel Nikko Niigata"
 },
 
 "2026-03-21":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟",
+hotel:"Hotel Nikko Niigata"
 },
 
 "2026-03-22":{
 location:"東京",
-hotel:"東京酒店"
+hotel:"Tokyo Hotel"
 },
 
 "2026-03-23":{
 location:"東京",
-hotel:"東京酒店"
+hotel:"Tokyo Hotel"
 },
 
 "2026-03-24":{
@@ -222,49 +215,50 @@ hotel:"回程"
 
 const select=document.getElementById("daySelect")
 
-Object.keys(data).forEach((d,i)=>{
+for(let d in tripData){
 
-let op=document.createElement("option")
-op.value=d
-op.text=d
-select.appendChild(op)
+let opt=document.createElement("option")
+opt.value=d
+opt.text=d
 
-})
+select.appendChild(opt)
 
-select.onchange=loadDay
+}
+
+select.addEventListener("change",loadDay)
 
 function loadDay(){
 
 let day=select.value
-let d=data[day]
+let data=tripData[day]
 
-document.getElementById("location").innerText=d.location||""
-document.getElementById("hotel").innerText=d.hotel||""
-document.getElementById("remark").innerText=d.remark||""
+document.getElementById("location").innerText=data.location||""
+document.getElementById("hotel").innerText=data.hotel||""
+document.getElementById("remark").innerText=data.remark||""
 
 document.getElementById("mapBtn").href=
-"https://www.google.com/maps/search/"+d.location
+"https://www.google.com/maps/search/"+data.location
 
 loadSpots()
-
-weather()
 
 }
 
 function addSpot(){
 
-let day=select.value
-let v=document.getElementById("spotInput").value
+let input=document.getElementById("spotInput")
+let val=input.value.trim()
 
-if(!v)return
+if(!val) return
+
+let day=select.value
 
 let spots=JSON.parse(localStorage.getItem(day)||"[]")
 
-spots.push(v)
+spots.push(val)
 
 localStorage.setItem(day,JSON.stringify(spots))
 
-document.getElementById("spotInput").value=""
+input.value=""
 
 loadSpots()
 
@@ -273,30 +267,32 @@ loadSpots()
 function loadSpots(){
 
 let day=select.value
+
 let spots=JSON.parse(localStorage.getItem(day)||"[]")
 
-let div=document.getElementById("spotList")
+let list=document.getElementById("spotList")
 
-div.innerHTML=""
+list.innerHTML=""
 
 spots.forEach((s,i)=>{
 
-let d=document.createElement("div")
-d.className="spot"
+let div=document.createElement("div")
 
-d.innerHTML=
-s+
-' <button onclick="delSpot('+i+')">❌</button>'
+div.className="spot"
 
-div.appendChild(d)
+div.innerHTML=
+s+' <button onclick="deleteSpot('+i+')">❌</button>'
+
+list.appendChild(div)
 
 })
 
 }
 
-function delSpot(i){
+function deleteSpot(i){
 
 let day=select.value
+
 let spots=JSON.parse(localStorage.getItem(day)||"[]")
 
 spots.splice(i,1)
@@ -307,15 +303,7 @@ loadSpots()
 
 }
 
-function weather(){
-
-let w=["☀️ Sunny","⛅ Cloudy","🌧 Rain"]
-
-document.getElementById("weather").innerText=
-w[Math.floor(Math.random()*3)]
-
-}
-
+select.selectedIndex=0
 loadDay()
 
 </script>
