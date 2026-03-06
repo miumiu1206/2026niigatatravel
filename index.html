@@ -96,6 +96,11 @@ display:inline-block;
 <div id="place"></div>
 </div>
 
+<div class="card">
+<div class="title">📝 Important Information</div>
+<div id="info"></div>
+</div>
+
 </div>
 
 <script>
@@ -106,7 +111,8 @@ const data={
 location:"東京(品川)",
 hotel:"品川高輪王子酒店",
 restaurant:"叙叙苑 (品川王子酒店)",
-place:"抵達東京"
+place:"抵達東京",
+info:"搭1700利木津巴士酒店門口落車"
 },
 
 "2026-03-08":{
@@ -277,6 +283,8 @@ document.getElementById("restaurant").innerText=d.restaurant||""
 
 document.getElementById("place").innerText=d.place||""
 
+document.getElementById("info").innerText=d.info||""
+
 document.getElementById("mapBtn").href=
 "https://www.google.com/maps/search/"+d.location
 
@@ -288,6 +296,7 @@ loadDay()
 
 </body>
 </html>
+
 
 
 
