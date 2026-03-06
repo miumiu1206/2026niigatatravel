@@ -62,12 +62,6 @@ margin-top:8px;
 display:inline-block;
 }
 
-.dayinfo{
-font-size:14px;
-margin-bottom:10px;
-text-align:center;
-}
-
 </style>
 </head>
 
@@ -78,8 +72,6 @@ text-align:center;
 </header>
 
 <div class="container">
-
-<div class="dayinfo" id="dayInfo"></div>
 
 <select id="daySelect"></select>
 
@@ -97,8 +89,8 @@ text-align:center;
 </div>
 
 <div class="card">
-<div class="title">🍽 Restaurant</div>
-<div id="weather"></div>
+<div class="title">🍜 Restaurant</div>
+<div id="restaurant"></div>
 </div>
 
 <div class="card">
@@ -115,117 +107,152 @@ const data={
 "2026-03-07":{
 location:"東京(品川)",
 hotel:"品川高輪王子酒店",
+restaurant:"叙叙苑 (品川王子酒店)",
 remark:"抵達東京"
 },
 
 "2026-03-08":{
 location:"東京",
-hotel:"品川高輪王子酒店"
+hotel:"品川高輪王子酒店",
+restaurant:"叙叙苑 (品川王子酒店)",
+remark:""
 },
 
 "2026-03-09":{
 location:"東京",
-hotel:"品川高輪王子酒店"
+hotel:"品川高輪王子酒店",
+restaurant:"",
+remark:""
 },
 
 "2026-03-10":{
 location:"東京",
-hotel:"品川高輪王子酒店"
+hotel:"品川高輪王子酒店",
+restaurant:"",
+remark:""
 },
 
 "2026-03-11":{
 location:"新潟",
-hotel:"APA （新潟站前大通）"
+hotel:"APA （新潟站前大通）",
+restaurant:"",
+remark:""
 },
 
 "2026-03-12":{
 location:"新潟",
-hotel:"APA （新潟站前大通）"
+hotel:"APA （新潟站前大通）",
+restaurant:"",
+remark:""
 },
 
 "2026-03-13":{
 location:"輕井澤",
-hotel:"APA （新潟站前大通）"
+hotel:"APA （新潟站前大通）",
+restaurant:"",
+remark:""
 },
 
 "2026-03-14":{
 location:"輕井澤",
-hotel:"APA （新潟站前大通）"
+hotel:"APA （新潟站前大通）",
+restaurant:"",
+remark:""
 },
 
 "2026-03-15":{
 location:"月岡溫泉",
-hotel:"新潟 白玉之湯 華鳳"
+hotel:"新潟 白玉之湯 華鳳",
+restaurant:"酒店晚餐",
+remark:""
 },
 
 "2026-03-16":{
 location:"月岡溫泉",
-hotel:"新潟 白玉之湯 華鳳"
+hotel:"新潟 白玉之湯 華鳳",
+restaurant:"酒店晚餐",
+remark:""
 },
 
 "2026-03-17":{
 location:"月岡溫泉",
-hotel:"新潟 白玉之湯 華鳳"
+hotel:"新潟 白玉之湯 華鳳",
+restaurant:"酒店晚餐",
+remark:""
 },
 
 "2026-03-18":{
 location:"新潟",
-hotel:"新潟大倉酒店"
+hotel:"新潟大倉酒店",
+restaurant:"",
+remark:""
 },
 
 "2026-03-19":{
 location:"新潟",
-hotel:"新潟大倉酒店"
+hotel:"新潟大倉酒店",
+restaurant:"",
+remark:""
 },
 
 "2026-03-20":{
 location:"新潟",
-hotel:"新潟大倉酒店"
+hotel:"新潟大倉酒店",
+restaurant:"",
+remark:""
 },
 
 "2026-03-21":{
 location:"新潟",
-hotel:"新潟大倉酒店"
+hotel:"新潟大倉酒店",
+restaurant:"",
+remark:""
 },
 
 "2026-03-22":{
 location:"東京",
-hotel:"神田: 相鐵FRESA INN 神田大手町"
+hotel:"神田: 相鐵FRESA INN 神田大手町",
+restaurant:"",
+remark:""
 },
 
 "2026-03-23":{
 location:"東京",
-hotel:"神田: 相鐵FRESA INN 神田大手町"
+hotel:"神田: 相鐵FRESA INN 神田大手町",
+restaurant:"",
+remark:""
 },
 
 "2026-03-24":{
 location:"東京",
-hotel:"回程"
+hotel:"回程",
+restaurant:"機場",
+remark:"回港"
 }
 
 }
 
 const select=document.getElementById("daySelect")
 
-const startDate=new Date(Object.keys(data)[0])
-const today=new Date().toISOString().slice(0,10)
+const week=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
 
-const weekday=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+const dates=Object.keys(data)
 
-Object.keys(data).forEach((d,i)=>{
+let today=new Date().toISOString().slice(0,10)
 
-let dateObj=new Date(d)
-let w=weekday[dateObj.getDay()]
+dates.forEach((d,i)=>{
 
-let op=document.createElement("option")
-op.value=d
+let date=new Date(d)
 
-let label=d+" ("+w+")"
+let label=week[date.getDay()]+" • "+d+" • Day "+(i+1)
 
-if(d===today){
-label+=" ⭐ Today"
+if(d==today){
+label="⭐ Today • "+label
 }
 
+let op=document.createElement("option")
+
+op.value=d
 op.text=label
 
 select.appendChild(op)
@@ -234,8 +261,6 @@ select.appendChild(op)
 
 if(data[today]){
 select.value=today
-}else{
-select.value=Object.keys(data)[0]
 }
 
 select.onchange=loadDay
@@ -243,31 +268,19 @@ select.onchange=loadDay
 function loadDay(){
 
 let day=select.value
+
 let d=data[day]
 
 document.getElementById("location").innerText=d.location||""
+
 document.getElementById("hotel").innerText=d.hotel||""
+
+document.getElementById("restaurant").innerText=d.restaurant||""
+
 document.getElementById("remark").innerText=d.remark||""
 
 document.getElementById("mapBtn").href=
 "https://www.google.com/maps/search/"+d.location
-
-let diff=(new Date(day)-startDate)/(1000*60*60*24)+1
-
-let dateObj=new Date(day)
-let w=weekday[dateObj.getDay()]
-
-document.getElementById("dayInfo").innerText=
-day+" ("+w+") • Day "+diff
-
-restaurant()
-
-}
-
-function restaurant(){
-
-document.getElementById("weather").innerText=
-"叙叙苑 (品川王子酒店)"
 
 }
 
