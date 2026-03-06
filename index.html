@@ -1,74 +1,66 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+
+<html>
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Japan Trip 2026</title>
+<title>Japan Trip Planner</title>
 
 <style>
 
 body{
 font-family:-apple-system;
-margin:0;
 background:#ffd6e7;
+margin:0;
+padding:20px;
 }
 
-header{
-background:#ff9ec4;
-padding:18px;
+h1{
 text-align:center;
-font-size:22px;
-font-weight:bold;
-color:white;
-}
-
-.container{
-padding:15px;
-}
-
-select{
-width:100%;
-padding:12px;
-border-radius:12px;
-border:none;
-font-size:16px;
-margin-bottom:15px;
+color:#d63384;
 }
 
 .card{
 background:white;
+border-radius:15px;
 padding:15px;
-border-radius:16px;
-margin-bottom:15px;
-box-shadow:0 3px 8px rgba(0,0,0,0.1);
+margin-bottom:20px;
+box-shadow:0 5px 10px rgba(0,0,0,0.1);
 }
 
-.title{
-font-weight:bold;
-margin-bottom:8px;
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#ffc2d1;
+padding:8px;
+}
+
+td{
+padding:8px;
+border-bottom:1px solid #eee;
+}
+
+td[contenteditable]{
+background:#fff7fb;
 }
 
 button{
-background:#ff7aa8;
+background:#ff8fab;
 border:none;
-padding:8px 12px;
+padding:6px 10px;
+border-radius:8px;
 color:white;
-border-radius:8px;
+font-size:12px;
 }
 
-input{
-padding:8px;
-border-radius:8px;
-border:1px solid #ddd;
-width:65%;
+button:hover{
+background:#fb6f92;
 }
 
-.spot{
-display:flex;
-justify-content:space-between;
-margin-top:6px;
+.add{
+margin-top:10px;
 }
 
 </style>
@@ -77,242 +69,134 @@ margin-top:6px;
 
 <body>
 
-<header>
-🌸 Japan Trip 2026
-</header>
-
-<div class="container">
-
-<select id="daySelect"></select>
+<h1>🌸 Japan Trip Planner</h1>
 
 <div class="card">
-<div class="title">📍 Location</div>
-<div id="location"></div>
-<br>
-<a id="mapBtn" target="_blank">
-<button>🗺 Open Map</button>
-</a>
+
+<h3>Day 1</h3>
+<p><b>Location:</b> Tokyo</p>
+<p><b>Hotel:</b> Hotel Sunroute Plaza Shinjuku</p>
+
+<table id="table1">
+<tr>
+<th>Time</th>
+<th>Activity</th>
+<th>食店</th>
+<th>Remarks</th>
+<th>Map</th>
+<th></th>
+</tr>
+
+<tr>
+<td contenteditable>09:00</td>
+<td contenteditable>Shinjuku</td>
+<td contenteditable></td>
+<td contenteditable></td>
+<td><button onclick="map(this)">Map</button></td>
+<td><button onclick="del(this)">X</button></td>
+</tr>
+
+</table>
+
+<button class="add" onclick="addRow('table1')">+ Add</button>
+
 </div>
 
 <div class="card">
-<div class="title">🏨 Hotel</div>
-<div id="hotel"></div>
-</div>
 
-<div class="card">
-<div class="title">📍 景點</div>
+<h3>Day 2</h3>
+<p><b>Location:</b> Tokyo</p>
+<p><b>Hotel:</b> Hotel Sunroute Plaza Shinjuku</p>
 
-<input id="spotInput" placeholder="新增景點">
-<button onclick="addSpot()">加入</button>
+<table id="table2">
+<tr>
+<th>Time</th>
+<th>Activity</th>
+<th>食店</th>
+<th>Remarks</th>
+<th>Map</th>
+<th></th>
+</tr>
 
-<div id="spotList"></div>
+<tr>
+<td contenteditable>10:00</td>
+<td contenteditable>Asakusa</td>
+<td contenteditable></td>
+<td contenteditable></td>
+<td><button onclick="map(this)">Map</button></td>
+<td><button onclick="del(this)">X</button></td>
+</tr>
 
-</div>
+</table>
 
-<div class="card">
-<div class="title">📝 Remark</div>
-<div id="remark"></div>
-</div>
+<button class="add" onclick="addRow('table2')">+ Add</button>
 
 </div>
 
 <script>
 
-const tripData={
+function addRow(id){
 
-"2026-03-07":{
-location:"東京(品川)",
-hotel:"品川高輪王子酒店",
-remark:"到達東京 叙叙苑(品川王子酒店)"
-},
+let table=document.getElementById(id);
 
-"2026-03-08":{
-location:"東京",
-hotel:"品川高輪王子酒店",
-remark:"明治神宮"
-},
+let row=table.insertRow(-1);
 
-"2026-03-09":{
-location:"東京",
-hotel:"品川高輪王子酒店",
-remark:"江之島"
-},
+row.innerHTML=
+`
+<td contenteditable></td>
+<td contenteditable></td>
+<td contenteditable></td>
+<td contenteditable></td>
+<td><button onclick="map(this)">Map</button></td>
+<td><button onclick="del(this)">X</button></td>
+`;
 
-"2026-03-10":{
-location:"東京",
-hotel:"品川高輪王子酒店",
-remark:"高輪Gateway NEWoMan"
-},
-
-"2026-03-11":{
-location:"新潟 Niigata",
-hotel:"APA （新潟站前大通）",
-remark:"今司代酒廠:1400 & LOVELA2 / NGT48劇場 / 新潟市AEON"
-},
-
-"2026-03-12":{
-location:"新潟 Niigata",
-hotel:"APA （新潟站前大通）",
-remark:"新潟市水族館瑪淋匹亞日本海 & Days Coffee Roaster/&Minato Marche Pier Bandai'
-},
-
-"2026-03-13":{
-location:"輕井澤",
-hotel:"輕井澤淺間王子大酒店"
-},
-
-"2026-03-14":{
-location:"輕井澤",
-hotel:"輕井澤淺間王子大酒店"
-},
-
-"2026-03-15":{
-location:"月岡溫泉",
-hotel:"新潟 白玉之湯 華鳳"
-},
-
-"2026-03-16":{
-location:"月岡溫泉",
-hotel:"新潟 白玉之湯 華鳳"
-},
-
-"2026-03-17":{
-location:"月岡溫泉",
-hotel:"新潟 白玉之湯 華鳳"
-},
-
-"2026-03-18":{
-location:"新潟",
-hotel:"新潟大倉酒店"
-},
-
-"2026-03-19":{
-location:"新潟",
-hotel:"新潟大倉酒店"
-},
-
-"2026-03-20":{
-location:"新潟",
-hotel:"新潟大倉酒店"
-},
-
-"2026-03-21":{
-location:"新潟",
-hotel:"新潟大倉酒店"
-},
-
-"2026-03-22":{
-location:"東京",
-hotel:"相鐵FRESA INN 神田大手町"
-},
-
-"2026-03-23":{
-location:"東京",
-hotel:"相鐵FRESA INN 神田大手町"
-},
-
-"2026-03-24":{
-location:"東京站",
-hotel:"Sweet Home"
-}
+save()
 
 }
 
-const select=document.getElementById("daySelect")
+function del(btn){
 
-for(let d in tripData){
+btn.parentNode.parentNode.remove();
 
-let opt=document.createElement("option")
-opt.value=d
-opt.text=d
-
-select.appendChild(opt)
+save()
 
 }
 
-select.addEventListener("change",loadDay)
+function map(btn){
 
-function loadDay(){
+let place=btn.parentNode.parentNode.children[1].innerText;
 
-let day=select.value
-let data=tripData[day]
-
-document.getElementById("location").innerText=data.location||""
-document.getElementById("hotel").innerText=data.hotel||""
-document.getElementById("remark").innerText=data.remark||""
-
-document.getElementById("mapBtn").href=
-"https://www.google.com/maps/search/"+data.location
-
-loadSpots()
+window.open(
+"https://www.google.com/maps/search/"+place
+)
 
 }
 
-function addSpot(){
+document.addEventListener("input",save)
 
-let input=document.getElementById("spotInput")
-let val=input.value.trim()
+function save(){
 
-if(!val) return
-
-let day=select.value
-
-let spots=JSON.parse(localStorage.getItem(day)||"[]")
-
-spots.push(val)
-
-localStorage.setItem(day,JSON.stringify(spots))
-
-input.value=""
-
-loadSpots()
+localStorage.setItem(
+"tripdata",
+document.body.innerHTML
+)
 
 }
 
-function loadSpots(){
+window.onload=function(){
 
-let day=select.value
+let data=localStorage.getItem("tripdata")
 
-let spots=JSON.parse(localStorage.getItem(day)||"[]")
+if(data){
 
-let list=document.getElementById("spotList")
-
-list.innerHTML=""
-
-spots.forEach((s,i)=>{
-
-let div=document.createElement("div")
-
-div.className="spot"
-
-div.innerHTML=
-s+' <button onclick="deleteSpot('+i+')">❌</button>'
-
-list.appendChild(div)
-
-})
+document.body.innerHTML=data
 
 }
 
-function deleteSpot(i){
-
-let day=select.value
-
-let spots=JSON.parse(localStorage.getItem(day)||"[]")
-
-spots.splice(i,1)
-
-localStorage.setItem(day,JSON.stringify(spots))
-
-loadSpots()
-
 }
-
-select.selectedIndex=0
-loadDay()
 
 </script>
 
 </body>
 </html>
-
