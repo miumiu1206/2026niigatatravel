@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Sakura Trip</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+</head>
+
+<body>
+
+<header>
+
+<div id="dateTitle"></div>
+<div id="dayCount"></div>
+<div id="weather"></div>
+
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<div class="cardTitle">📍 Location</div>
+<div id="location"></div>
+
+</div>
+
+<div class="card">
+
+<div class="cardTitle">🏨 Hotel</div>
+<div id="hotel"></div>
+
+</div>
+
+<div class="card">
+
+<div class="cardTitle">📍 景點</div>
+
+<div id="spots"></div>
+
+<div class="addBox">
+<input id="newSpot" placeholder="新增景點">
+<button onclick="addSpot()">加入</button>
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="cardTitle">📝 Remark</div>
+<div id="remark"></div>
+
+</div>
+
+</div>
+
+<div class="nav">
+
+<button onclick="prev()">←</button>
+<button onclick="next()">→</button>
+
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
