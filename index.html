@@ -57,22 +57,15 @@ border-radius:8px;
 font-size:14px;
 }
 
-input{
-width:70%;
-padding:8px;
-border-radius:8px;
-border:1px solid #ddd;
-}
-
-.spot{
-display:flex;
-justify-content:space-between;
-margin-top:8px;
-}
-
 .map{
 margin-top:8px;
 display:inline-block;
+}
+
+.dayinfo{
+font-size:14px;
+margin-bottom:10px;
+text-align:center;
 }
 
 </style>
@@ -85,6 +78,8 @@ display:inline-block;
 </header>
 
 <div class="container">
+
+<div class="dayinfo" id="dayInfo"></div>
 
 <select id="daySelect"></select>
 
@@ -102,18 +97,8 @@ display:inline-block;
 </div>
 
 <div class="card">
-<div class="title">🌤 Weather</div>
-<div id="weather">Loading...</div>
-</div>
-
-<div class="card">
-<div class="title">📍 景點</div>
-
-<input id="spotInput" placeholder="新增景點">
-<button onclick="addSpot()">加入</button>
-
-<div id="spotList"></div>
-
+<div class="title">🍽 Restaurant</div>
+<div id="weather"></div>
 </div>
 
 <div class="card">
@@ -129,92 +114,92 @@ const data={
 
 "2026-03-07":{
 location:"東京(品川)",
-hotel:"品川 Prince Hotel",
+hotel:"品川高輪王子酒店",
 remark:"抵達東京"
 },
 
 "2026-03-08":{
 location:"東京",
-hotel:"品川 Prince Hotel"
+hotel:"品川高輪王子酒店"
 },
 
 "2026-03-09":{
 location:"東京",
-hotel:"品川 Prince Hotel"
+hotel:"品川高輪王子酒店"
 },
 
 "2026-03-10":{
 location:"東京",
-hotel:"品川 Prince Hotel"
+hotel:"品川高輪王子酒店"
 },
 
 "2026-03-11":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟",
+hotel:"APA （新潟站前大通）"
 },
 
 "2026-03-12":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟",
+hotel:"APA （新潟站前大通）"
 },
 
 "2026-03-13":{
 location:"輕井澤",
-hotel:"輕井澤 Prince"
+hotel:"APA （新潟站前大通）"
 },
 
 "2026-03-14":{
 location:"輕井澤",
-hotel:"輕井澤 Prince"
+hotel:"APA （新潟站前大通）"
 },
 
 "2026-03-15":{
 location:"月岡溫泉",
-hotel:"白玉之湯"
+hotel:"新潟 白玉之湯 華鳳"
 },
 
 "2026-03-16":{
 location:"月岡溫泉",
-hotel:"白玉之湯"
+hotel:"新潟 白玉之湯 華鳳"
 },
 
 "2026-03-17":{
 location:"月岡溫泉",
-hotel:"白玉之湯"
+hotel:"新潟 白玉之湯 華鳳"
 },
 
 "2026-03-18":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟",
+hotel:"新潟大倉酒店"
 },
 
 "2026-03-19":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟",
+hotel:"新潟大倉酒店"
 },
 
 "2026-03-20":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟",
+hotel:"新潟大倉酒店"
 },
 
 "2026-03-21":{
-location:"Niigata",
-hotel:"新潟日航酒店"
+location:"新潟",
+hotel:"新潟大倉酒店"
 },
 
 "2026-03-22":{
 location:"東京",
-hotel:"東京酒店"
+hotel:"神田: 相鐵FRESA INN 神田大手町"
 },
 
 "2026-03-23":{
 location:"東京",
-hotel:"東京酒店"
+hotel:"神田: 相鐵FRESA INN 神田大手町"
 },
 
 "2026-03-24":{
-location:"東京站",
+location:"東京",
 hotel:"回程"
 }
 
@@ -222,14 +207,36 @@ hotel:"回程"
 
 const select=document.getElementById("daySelect")
 
+const startDate=new Date(Object.keys(data)[0])
+const today=new Date().toISOString().slice(0,10)
+
+const weekday=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]
+
 Object.keys(data).forEach((d,i)=>{
+
+let dateObj=new Date(d)
+let w=weekday[dateObj.getDay()]
 
 let op=document.createElement("option")
 op.value=d
-op.text=d
+
+let label=d+" ("+w+")"
+
+if(d===today){
+label+=" ⭐ Today"
+}
+
+op.text=label
+
 select.appendChild(op)
 
 })
+
+if(data[today]){
+select.value=today
+}else{
+select.value=Object.keys(data)[0]
+}
 
 select.onchange=loadDay
 
@@ -245,74 +252,22 @@ document.getElementById("remark").innerText=d.remark||""
 document.getElementById("mapBtn").href=
 "https://www.google.com/maps/search/"+d.location
 
-loadSpots()
+let diff=(new Date(day)-startDate)/(1000*60*60*24)+1
 
-weather()
+let dateObj=new Date(day)
+let w=weekday[dateObj.getDay()]
 
-}
+document.getElementById("dayInfo").innerText=
+day+" ("+w+") • Day "+diff
 
-function addSpot(){
-
-let day=select.value
-let v=document.getElementById("spotInput").value
-
-if(!v)return
-
-let spots=JSON.parse(localStorage.getItem(day)||"[]")
-
-spots.push(v)
-
-localStorage.setItem(day,JSON.stringify(spots))
-
-document.getElementById("spotInput").value=""
-
-loadSpots()
+restaurant()
 
 }
 
-function loadSpots(){
-
-let day=select.value
-let spots=JSON.parse(localStorage.getItem(day)||"[]")
-
-let div=document.getElementById("spotList")
-
-div.innerHTML=""
-
-spots.forEach((s,i)=>{
-
-let d=document.createElement("div")
-d.className="spot"
-
-d.innerHTML=
-s+
-' <button onclick="delSpot('+i+')">❌</button>'
-
-div.appendChild(d)
-
-})
-
-}
-
-function delSpot(i){
-
-let day=select.value
-let spots=JSON.parse(localStorage.getItem(day)||"[]")
-
-spots.splice(i,1)
-
-localStorage.setItem(day,JSON.stringify(spots))
-
-loadSpots()
-
-}
-
-function weather(){
-
-let w=["☀️ Sunny","⛅ Cloudy","🌧 Rain"]
+function restaurant(){
 
 document.getElementById("weather").innerText=
-w[Math.floor(Math.random()*3)]
+"叙叙苑 (品川王子酒店)"
 
 }
 
